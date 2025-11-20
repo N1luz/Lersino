@@ -9,6 +9,21 @@
 // -----------------------------------------------------------------------------
 // State Definition
 // -----------------------------------------------------------------------------
+const API_BASE = "https://DEINE-RENDER-URL.onrender.com";
+
+async function apiRequest(path, options = {}) {
+  const headers = options.headers || {};
+  headers["Content-Type"] = "application/json";
+  const res = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers,
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
 const state = {
   user: {
     name: 'Gast',
