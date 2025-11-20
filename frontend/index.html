@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>LernCasino – Bilanzierung</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Import the main stylesheet for the app. When served from a web server the
+       relative path will resolve to /frontend/style.css -->
+  <link rel="stylesheet" href="style.css" />
+  <!-- Import Google Fonts for better typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="app" class="app">
+    <!-- ======================= AUTH/LANDING SCREEN ======================= -->
+    <div class="screen screen--auth" id="authScreen">
+      <div class="auth-card">
+        <div class="auth-logo">🎰 LernCasino</div>
+        <p class="auth-subtitle">
+          Lerne Bilanzierung wie ein Casino‑Game.<br />
+          Level‑Up mit XP, Streaks & Power‑Ups.
+        </p>
+        <button class="btn btn-primary" id="btnQuickStart">Ohne Account starten</button>
+        <div class="auth-divider"><span>oder</span></div>
+        <button class="btn btn-ghost" id="btnShowLogin">Login / Account erstellen</button>
+      </div>
+      <div class="auth-modal" id="loginModal">
+        <div class="auth-modal-card">
+          <h2>Login</h2>
+          <label class="input-label">Nutzername</label>
+          <input type="text" id="loginName" class="input" />
+          <label class="input-label">Passwort</label>
+          <input type="password" id="loginPass" class="input" />
+          <div class="auth-modal-actions">
+            <button class="btn btn-secondary" id="btnLoginSubmit">Login</button>
+            <button class="btn btn-ghost" id="btnLoginClose">Abbrechen</button>
+          </div>
+          <p class="auth-hint">Kein Account? Login legt automatisch ein Profil an (localStorage).</p>
+        </div>
+      </div>
+    </div>
+    <!-- ======================= MAIN APP SCREEN ======================= -->
+    <div class="screen screen--main" id="mainScreen">
+      <!-- -------- Topbar with logo, XP bar, hearts, coins, streak, settings -------- -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="logo-chip">
+            <span class="logo-icon">🎰</span>
+            <span class="logo-text">LernCasino</span>
+          </div>
+        </div>
+        <div class="topbar-center">
+          <div class="xp-bar">
+            <div class="xp-bar-header">
+              <span class="xp-label">Level <span id="levelValue">1</span></span>
+              <span class="xp-value"><span id="xpValue">0</span> XP</span>
+            </div>
+            <div class="xp-bar-track"><div class="xp-bar-fill" id="xpBarFill"></div></div>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button class="pill pill--flat" id="btnHearts">❤️ <span id="heartsValue">3</span></button>
+          <button class="pill pill--flat pill--gold" id="btnCoins">🪙 <span id="coinsValue">0</span></button>
+          <button class="pill pill--flat" id="btnStreak">🔥 <span id="streakValue">0</span></button>
+          <button class="icon-btn" id="btnSettings" aria-label="Settings">⚙️</button>
+        </div>
+      </header>
+      <!-- -------- Main content area with views -------- -->
+      <main class="screen-body">
+        <!-- ~~~~ Home / Map View ~~~~ -->
+        <section class="view view--active" id="viewHome">
+          <div class="view-header">
+            <h1>Bilanz‑Welten</h1>
+            <p class="view-subtitle">Arbeite dich durch die Bilanzierungs‑Map und unlocke alle Themen.</p>
+          </div>
+          <div class="map-wrapper">
+            <div class="map-path"></div>
+            <button class="level-node level-node--active" data-level="1">
+              <span class="level-title">Basics</span>
+              <span class="level-chip">F1–7</span>
+            </button>
+            <button class="level-node" data-level="2">
+              <span class="level-title">GoB &amp; Prinzipien</span>
+              <span class="level-chip">F8–14</span>
+            </button>
+            <button class="level-node" data-level="3">
+              <span class="level-title">AK / HK &amp; Abschreibungen</span>
+              <span class="level-chip">F15–19</span>
+            </button>
+            <button class="level-node" data-level="4">
+              <span class="level-title">Immaterielle VG &amp; latente St.</span>
+              <span class="level-chip">F20–24</span>
+            </button>
+            <button class="level-node" data-level="5">
+              <span class="level-title">Bewertung, RSt &amp; GuV</span>
+              <span class="level-chip">F25–39</span>
+            </button>
+          </div>
+        </section>
+        <!-- ~~~~ Quiz View ~~~~ -->
+        <section class="view" id="viewQuiz">
+          <div class="view-header">
+            <h1>Quiz</h1>
+            <p class="view-subtitle" id="quizSubtitle">Level auswählen, um loszulegen.</p>
+          </div>
+          <div class="quiz-card" id="quizCard">
+            <div class="quiz-meta">
+              <span id="quizLevelLabel">Level 1</span>
+              <span id="quizProgressLabel">Frage 1 / 1</span>
+            </div>
+            <div class="quiz-question" id="quizQuestion">Wähle ein Level auf der Map, um zu starten.</div>
+            <div class="quiz-answers" id="quizAnswers"></div>
+          </div>
+        </section>
+        <!-- ~~~~ Flashcards View ~~~~ -->
+        <section class="view" id="viewFlashcards">
+          <div class="view-header">
+            <h1>Flashcards</h1>
+            <p class="view-subtitle">Ideale Vorbereitung: Begriffe &amp; Definitionen einprägen.</p>
+          </div>
+          <div class="flashcard" id="flashcard">
+            <div class="flashcard-face flashcard-face--front" id="flashcardFront">Frage / Begriff</div>
+            <div class="flashcard-face flashcard-face--back" id="flashcardBack">Antwort / Definition</div>
+          </div>
+          <div class="flashcard-actions">
+            <button class="btn btn-secondary" id="btnFlipCard">Flip</button>
+            <button class="btn btn-primary" id="btnCardIKnow">Ich kann das</button>
+          </div>
+        </section>
+        <!-- ~~~~ Leaderboard View ~~~~ -->
+        <section class="view" id="viewLeaderboard">
+          <div class="view-header">
+            <h1>Leaderboard</h1>
+            <p class="view-subtitle">Vergleiche deine XP &amp; Streaks mit anderen Accounts (lokal).</p>
+          </div>
+          <div class="leaderboard-list" id="leaderboardList"></div>
+        </section>
+        <!-- ~~~~ Shop View ~~~~ -->
+        <section class="view" id="viewShop">
+          <div class="view-header">
+            <h1>Shop</h1>
+            <p class="view-subtitle">Tausche Coins gegen Power‑Ups wie Extra‑Leben oder 2× XP.</p>
+          </div>
+          <div class="shop-grid">
+            <div class="shop-item">
+              <div class="shop-item-title">Extra Herz</div>
+              <div class="shop-item-desc">+1 Leben für dieses Level.</div>
+              <div class="shop-item-footer">
+                <span class="shop-price">🪙 20</span>
+                <button class="btn btn-secondary" data-shop="extraLife">Kaufen</button>
+              </div>
+            </div>
+            <div class="shop-item">
+              <div class="shop-item-title">2× XP Booster</div>
+              <div class="shop-item-desc">Für die nächste Runde doppelte XP.</div>
+              <div class="shop-item-footer">
+                <span class="shop-price">🪙 30</span>
+                <button class="btn btn-secondary" data-shop="doubleXP">Kaufen</button>
+              </div>
+            </div>
+            <div class="shop-item">
+              <div class="shop-item-title">50/50 Joker</div>
+              <div class="shop-item-desc">Eliminiert zwei falsche Antworten.</div>
+              <div class="shop-item-footer">
+                <span class="shop-price">🪙 15</span>
+                <button class="btn btn-secondary" data-shop="fiftyFifty">Kaufen</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <!-- -------- Bottom navigation -------- -->
+      <nav class="bottom-nav">
+        <button class="bottom-nav-btn bottom-nav-btn--active" data-view="Home">
+          <span class="bottom-nav-icon">🏠</span>
+          <span class="bottom-nav-label">Home</span>
+        </button>
+        <button class="bottom-nav-btn" data-view="Quiz">
+          <span class="bottom-nav-icon">🎯</span>
+          <span class="bottom-nav-label">Quiz</span>
+        </button>
+        <button class="bottom-nav-btn" data-view="Flashcards">
+          <span class="bottom-nav-icon">🃏</span>
+          <span class="bottom-nav-label">Cards</span>
+        </button>
+        <button class="bottom-nav-btn" data-view="Leaderboard">
+          <span class="bottom-nav-icon">🏆</span>
+          <span class="bottom-nav-label">Ranking</span>
+        </button>
+        <button class="bottom-nav-btn" data-view="Shop">
+          <span class="bottom-nav-icon">🛒</span>
+          <span class="bottom-nav-label">Shop</span>
+        </button>
+      </nav>
+      <!-- -------- Settings modal -------- -->
+      <div class="overlay" id="settingsOverlay">
+        <div class="overlay-card">
+          <h2>Settings</h2>
+          <div class="setting-row">
+            <span>Sound</span>
+            <label class="toggle"><input type="checkbox" id="toggleSound" checked /><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
+          </div>
+          <div class="setting-row">
+            <span>Musik</span>
+            <label class="toggle"><input type="checkbox" id="toggleMusic" checked /><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
+          </div>
+          <div class="setting-row">
+            <span>Profil</span>
+            <button class="btn btn-ghost" id="btnOpenProfile">Profil öffnen</button>
+          </div>
+          <button class="btn btn-secondary" id="btnCloseSettings">Schließen</button>
+        </div>
+      </div>
+      <!-- -------- Profile modal -------- -->
+      <div class="overlay" id="profileOverlay">
+        <div class="overlay-card">
+          <h2>Account</h2>
+          <label class="input-label">Nutzername</label>
+          <input type="text" id="profileName" class="input" />
+          <label class="input-label">Passwort ändern</label>
+          <input type="password" id="profilePass" class="input" />
+          <div class="profile-stats">
+            <div>Level: <span id="profileLevel">1</span></div>
+            <div>XP: <span id="profileXP">0</span></div>
+            <div>Max Streak: <span id="profileBestStreak">0</span></div>
+          </div>
+          <div class="overlay-actions">
+            <button class="btn btn-secondary" id="btnSaveProfile">Speichern</button>
+            <button class="btn btn-ghost" id="btnCloseProfile">Schließen</button>
+          </div>
+        </div>
+      </div>
+      <!-- -------- Level‑Up overlay -------- -->
+      <div class="overlay overlay--win" id="levelUpOverlay">
+        <div class="overlay-card overlay-card--win">
+          <h2>LEVEL UP!</h2>
+          <p>Starker Move – du bist jetzt Level <span id="levelUpValue">2</span> 🔥</p>
+          <button class="btn btn-primary" id="btnCloseLevelUp">Weiterzocken</button>
+        </div>
+      </div>
+    </div>
+    <!-- Hidden audio tags for sound effects. Provide your own MP3 sources. -->
+    <audio id="sfxCorrect"><source src="" type="audio/mpeg" /></audio>
+    <audio id="sfxWrong"><source src="" type="audio/mpeg" /></audio>
+  </div>
+  <!-- Include the main script after the body content. This script drives all interactive
+       behavior, including view switching, login, quiz, flashcards and API calls. -->
+  <script src="app.js"></script>
+</body>
+</html>
